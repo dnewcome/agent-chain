@@ -1,4 +1,4 @@
-"""A Step is one node in the work-chain.
+"""A Step is one node in the agent-chain.
 
 Identity: `step_id = sha256(canonical_json(content))` where `content` is
 (index, parent_step_id, kind, timestamp, payload). Signature commits to

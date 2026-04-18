@@ -1,4 +1,4 @@
-"""WorkChain = harness identity + sealed sequence of signed Steps.
+"""AgentChain = harness identity + sealed sequence of signed Steps.
 
 Invariants enforced at build and verify time:
   - steps[0].parent_step_id is None
@@ -23,7 +23,7 @@ from .step import Step, validate_payload
 
 
 @dataclass
-class WorkChain:
+class AgentChain:
     harness_id: str
     harness_version_hash: str
     steps: list[Step] = field(default_factory=list)
@@ -53,7 +53,7 @@ class WorkChain:
         }
 
     @classmethod
-    def from_dict(cls, d: dict[str, Any]) -> "WorkChain":
+    def from_dict(cls, d: dict[str, Any]) -> "AgentChain":
         return cls(
             harness_id=d["harness_id"],
             harness_version_hash=d["harness_version_hash"],
@@ -67,11 +67,11 @@ class WorkChain:
         Path(path).write_text(json.dumps(self.to_dict(), indent=2, sort_keys=True))
 
     @classmethod
-    def load(cls, path: str | Path) -> "WorkChain":
+    def load(cls, path: str | Path) -> "AgentChain":
         return cls.from_dict(json.loads(Path(path).read_text()))
 
 
-def _append(chain: WorkChain, kind: str, payload: dict[str, Any], signer: Signer, *, timestamp: float | None = None) -> Step:
+def _append(chain: AgentChain, kind: str, payload: dict[str, Any], signer: Signer, *, timestamp: float | None = None) -> Step:
     validate_payload(kind, payload)
     step = Step(
         index=len(chain.steps),
@@ -88,7 +88,7 @@ def _append(chain: WorkChain, kind: str, payload: dict[str, Any], signer: Signer
     return step
 
 
-def seal(chain: WorkChain, signer: Signer) -> None:
+def seal(chain: AgentChain, signer: Signer) -> None:
     if not chain.steps:
         raise ValueError("cannot seal empty chain")
     chain.chain_id = chain.steps[-1].step_id
@@ -102,12 +102,12 @@ def build(
     harness_version_hash: str,
     events: list[dict[str, Any]],
     signer: Signer,
-) -> WorkChain:
+) -> AgentChain:
     """Build a sealed chain from a transcript of events.
 
     Each event is `{kind: str, payload: dict, timestamp?: float}`.
     """
-    chain = WorkChain(harness_id=harness_id, harness_version_hash=harness_version_hash)
+    chain = AgentChain(harness_id=harness_id, harness_version_hash=harness_version_hash)
     for ev in events:
         _append(chain, ev["kind"], ev["payload"], signer, timestamp=ev.get("timestamp"))
     seal(chain, signer)
@@ -124,7 +124,7 @@ class VerifyResult:
         self.errors.append(msg)
 
 
-def verify(chain: WorkChain, signer: Signer) -> VerifyResult:
+def verify(chain: AgentChain, signer: Signer) -> VerifyResult:
     result = VerifyResult(ok=True)
     prev_id: str | None = None
     for i, step in enumerate(chain.steps):

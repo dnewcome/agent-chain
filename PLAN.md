@@ -1,10 +1,10 @@
-# work-chain — v0 Plan
+# agent-chain — v0 Plan
 
 ## Positioning
 
 A **provenance chain for code creation**. Every change to an artifact is the
 output of some *process*: a user prompt, an LLM call, a tool call, a
-human edit. A work-chain is a signed, hash-linked log of those steps, such
+human edit. A agent-chain is a signed, hash-linked log of those steps, such
 that a third party can verify the artifact was born through an approved
 harness — not hand-rolled, not tampered with mid-stream, not produced by a
 model or prompt the policy forbids.
@@ -17,9 +17,9 @@ canonical engine (the harness version), and let a verifier replay.
 
 **Relation to `../energy-secops`.** That project audits *finished*
 artifacts: "artifact X received T tokens of adversarial analysis against
-threat model M, findings F." work-chain is the dual: "artifact X was born
+threat model M, findings F." agent-chain is the dual: "artifact X was born
 from harness H v2.3, transcript T, signed by provider P." An artifact's
-full provenance package is work-chain (birth) + energy-secops (health).
+full provenance package is agent-chain (birth) + energy-secops (health).
 Both use ed25519, content addressing, and a hash chain anchored to a
 trusted CA; the data models are siblings.
 
@@ -102,7 +102,7 @@ add-on — unnecessary for verifying the full chain.
 
 ### Chain
 ```
-WorkChain {
+AgentChain {
   chain_id: sha256              # = last step's step_id (head)
   harness_id: str
   harness_version_hash: sha256
@@ -113,7 +113,7 @@ WorkChain {
 ```
 
 ### Blob store (v1)
-Content-addressed dir at `~/.work-chain/blobs/`. Raw bytes for every
+Content-addressed dir at `~/.agent-chain/blobs/`. Raw bytes for every
 `input_hash` / `output_hash` in the chain. Lets verifiers reconstruct
 inputs and replay deterministic steps without re-fetching. v0: hashes
 only, blobs live wherever the recorder left them.
@@ -121,19 +121,19 @@ only, blobs live wherever the recorder left them.
 ## v0 scaffold
 
 ```
-work-chain/
+agent-chain/
   pyproject.toml
   README.md
   PLAN.md
   examples/
     transcript.json                 # canonical sample input
-  src/work_chain/
+  src/agent_chain/
     canonical.py                    # canonical JSON + sha256
     signing.py                      # ed25519 CA keypair mgmt (mirrors energy-secops)
     step.py                         # Step dataclass + hashing
-    chain.py                        # WorkChain build/append/verify
+    chain.py                        # AgentChain build/append/verify
     recorder.py                     # transcript → chain (v0 sole recorder)
-    cli.py                          # work-chain record | verify | show | ca
+    cli.py                          # agent-chain record | verify | show | ca
 ```
 
 ## Milestones
@@ -141,7 +141,7 @@ work-chain/
 1. **M1 — transcript → signed chain** (this PR). Record a transcript JSON
    into a chain; verify linkage + signatures. No blob store, no LLM
    integration, no replay.
-2. **M2 — blob store**. `~/.work-chain/blobs/`; recorder persists raw
+2. **M2 — blob store**. `~/.agent-chain/blobs/`; recorder persists raw
    bytes for every hash; verifier can dump them back out.
 3. **M3 — deterministic tool replay**. Given blobs, rerun every
    `deterministic=true` tool step and confirm output hashes.
@@ -154,8 +154,8 @@ work-chain/
 6. **M6 — transparency log**. Publish chain heads to an append-only log
    (Rekor, Trillian, or self-hosted), so a chain can't be silently
    rewritten.
-7. **M7 — artifact linkage with `energy-secops`**. A work-chain's terminal
-   artifact becomes an `energy-secops` `Source.kind = "work-chain"`, so
+7. **M7 — artifact linkage with `energy-secops`**. A agent-chain's terminal
+   artifact becomes an `energy-secops` `Source.kind = "agent-chain"`, so
    audit attestations reference the provenance chain explicitly.
 
 ## Trust-model ladder
@@ -180,7 +180,7 @@ Data model supports all four via `provider_receipt`. v0 implements tier 0.
 - **Sampler determinism.** Full-replay (tier 2a) needs deterministic
   sampling at a pinned weight hash. Open research problem at the model
   layer; we can't force it.
-- **Chain-of-chains.** An LLM step whose output is itself a work-chain
+- **Chain-of-chains.** An LLM step whose output is itself a agent-chain
   (agent spawns sub-agent). Nest by storing the inner chain's `chain_id`
   as the step's `output_hash`; verifier recurses.
 - **Cost model.** Recording doubles storage (blobs + chain). Pricing a

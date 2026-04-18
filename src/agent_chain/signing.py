@@ -16,7 +16,7 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import (
 
 from .canonical import content_hash
 
-DEFAULT_KEY_PATH = Path.home() / ".work-chain" / "ca.key"
+DEFAULT_KEY_PATH = Path.home() / ".agent-chain" / "ca.key"
 
 
 def _load_or_create_key(key_path: Path) -> Ed25519PrivateKey:

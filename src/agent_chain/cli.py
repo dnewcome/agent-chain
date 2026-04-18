@@ -1,4 +1,4 @@
-"""work-chain CLI: record | verify | show | ca."""
+"""agent-chain CLI: record | verify | show | ca."""
 from __future__ import annotations
 
 import json
@@ -20,7 +20,7 @@ def main() -> None:
 @click.option("--out", type=click.Path(dir_okay=False, path_type=Path), required=True)
 @click.option("--key", type=click.Path(dir_okay=False, path_type=Path), default=DEFAULT_KEY_PATH, show_default=True)
 def record(transcript: Path, out: Path, key: Path) -> None:
-    """Record a transcript JSON into a signed work-chain.
+    """Record a transcript JSON into a signed agent-chain.
 
     Transcript shape:
         { "harness_id": str,
@@ -43,8 +43,8 @@ def record(transcript: Path, out: Path, key: Path) -> None:
 @click.argument("chain_file", type=click.Path(exists=True, dir_okay=False, path_type=Path))
 @click.option("--key", type=click.Path(dir_okay=False, path_type=Path), default=DEFAULT_KEY_PATH, show_default=True)
 def verify(chain_file: Path, key: Path) -> None:
-    """Verify a work-chain's linkage, step signatures, and seal."""
-    wc = chain_mod.WorkChain.load(chain_file)
+    """Verify an agent-chain's linkage, step signatures, and seal."""
+    wc = chain_mod.AgentChain.load(chain_file)
     signer = Signer(key)
     result = chain_mod.verify(wc, signer)
     if result.ok:
@@ -59,8 +59,8 @@ def verify(chain_file: Path, key: Path) -> None:
 @main.command()
 @click.argument("chain_file", type=click.Path(exists=True, dir_okay=False, path_type=Path))
 def show(chain_file: Path) -> None:
-    """Pretty-print a work-chain."""
-    wc = chain_mod.WorkChain.load(chain_file)
+    """Pretty-print an agent-chain."""
+    wc = chain_mod.AgentChain.load(chain_file)
     click.echo(f"harness         : {wc.harness_id} @ {wc.harness_version_hash}")
     click.echo(f"chain_id (head) : {wc.chain_id}")
     click.echo(f"sealed by       : {wc.ca_key_id}")

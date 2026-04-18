@@ -1,15 +1,15 @@
-# work-chain
+# agent-chain
 
 Cryptographic provenance for **how code was created**, not what it looks like
-after. A `work-chain` is a signed, replay-verifiable log of the steps an AI
+after. An `agent-chain` is a signed, replay-verifiable log of the steps an AI
 harness took to produce an artifact — prompts in, model calls, tool calls,
 tool results, user edits — each step hash-linked to its predecessor.
 
-> Anti-cheat replay files prove a game run came from an approved engine. A
-> work-chain proves a code change came from an approved agent loop.
+> Anti-cheat replay files prove a game run came from an approved engine. An
+> agent-chain proves a code change came from an approved agent loop.
 
 Complement to [../energy-secops](../energy-secops) — that project issues
-signed receipts that a **finished artifact** was audited. work-chain issues
+signed receipts that a **finished artifact** was audited. agent-chain issues
 signed receipts that an artifact was **born through an attested process**.
 Same crypto primitives (ed25519, content-addressed everything, hash chain);
 opposite side of the lifecycle.
@@ -27,14 +27,14 @@ model to `energy-secops`).
 pip install -e .
 ```
 
-First run auto-generates `~/.work-chain/ca.key` (+ `.pub`).
+First run auto-generates `~/.agent-chain/ca.key` (+ `.pub`).
 
 ## Quick start
 
 ```
-work-chain record examples/transcript.json --out /tmp/chain.json
-work-chain verify /tmp/chain.json
-work-chain show   /tmp/chain.json
+agent-chain record examples/transcript.json --out /tmp/chain.json
+agent-chain verify /tmp/chain.json
+agent-chain show   /tmp/chain.json
 ```
 
 ## Step kinds (v0)
@@ -47,7 +47,7 @@ work-chain show   /tmp/chain.json
 | `harness`  | `event, harness_id, harness_version_hash`                            |
 
 Each step stores only hashes; raw bytes go to a content-addressed blob
-store (v1 — `~/.work-chain/blobs/`). A verifier armed with the blobs and a
+store (v1 — `~/.agent-chain/blobs/`). A verifier armed with the blobs and a
 deterministic harness replay can re-derive every deterministic step.
 
 ## Trust model
