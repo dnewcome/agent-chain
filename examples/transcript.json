@@ -1,0 +1,63 @@
+{
+  "harness_id": "claude-code",
+  "harness_version_hash": "sha256:d41d8cd98f00b204e9800998ecf8427e000000000000000000000000deadbeef",
+  "events": [
+    {
+      "kind": "harness",
+      "timestamp": 1744963200.0,
+      "payload": {
+        "event": "init",
+        "harness_id": "claude-code",
+        "harness_version_hash": "sha256:d41d8cd98f00b204e9800998ecf8427e000000000000000000000000deadbeef"
+      }
+    },
+    {
+      "kind": "user",
+      "timestamp": 1744963201.0,
+      "payload": {
+        "input_hash": "sha256:9b71d224bd62f3785d96d46ad3ea3d73319bfbc2890caadae2dff72519673ca7"
+      }
+    },
+    {
+      "kind": "llm",
+      "timestamp": 1744963202.5,
+      "payload": {
+        "provider": "anthropic",
+        "model": "claude-opus-4-7",
+        "input_hash": "sha256:2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae",
+        "output_hash": "sha256:fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9",
+        "usage": { "input_tokens": 1284, "output_tokens": 512 },
+        "provider_receipt": null
+      }
+    },
+    {
+      "kind": "tool",
+      "timestamp": 1744963203.0,
+      "payload": {
+        "tool_name": "Read",
+        "input_hash": "sha256:64ec88ca00b268e5ba1a35678a1b5316d212f4f366b2477232534a8aeca37f3c",
+        "output_hash": "sha256:7d865e959b2466918c9863afca942d0fb89d7c9ac0c99bafc3749504ded97730",
+        "deterministic": true
+      }
+    },
+    {
+      "kind": "tool",
+      "timestamp": 1744963204.2,
+      "payload": {
+        "tool_name": "Edit",
+        "input_hash": "sha256:deb1536f480475f7d593f5fa28c7ca6f7eceabf1e7d7b68b7f2e7b3e6c5d4f3a",
+        "output_hash": "sha256:a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3",
+        "deterministic": true
+      }
+    },
+    {
+      "kind": "harness",
+      "timestamp": 1744963205.0,
+      "payload": {
+        "event": "terminate",
+        "harness_id": "claude-code",
+        "harness_version_hash": "sha256:d41d8cd98f00b204e9800998ecf8427e000000000000000000000000deadbeef"
+      }
+    }
+  ]
+}
